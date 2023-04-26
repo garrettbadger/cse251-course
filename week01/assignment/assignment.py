@@ -2,7 +2,7 @@
 Course: CSE 251 
 Lesson Week: 01
 File: assignment.py 
-Author: <Add name here>
+Author: Garrett Badger
 
 Purpose: Drawing with Python Turtle
 
