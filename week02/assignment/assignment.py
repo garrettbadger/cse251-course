@@ -86,6 +86,7 @@ def characters(film6, threads_c, call_count):
     for i in threads_c:
         print(i.response['name'], end=", ")
     print()
+    print()
     return call_count
 
 def planets(film6, threads_p, call_count):
@@ -99,6 +100,7 @@ def planets(film6, threads_p, call_count):
         i.join()
     for i in threads_p:
         print(i.response['name'], end=", ")
+    print()
     print()
     return call_count
 
@@ -114,6 +116,7 @@ def starships(film6, threads_s, call_count):
     for i in threads_s:
         print(i.response['name'], end=", ")
     print()
+    print()
     return call_count
 
 def vehicles(film6, threads_v, call_count):
@@ -128,6 +131,7 @@ def vehicles(film6, threads_v, call_count):
     for i in threads_v:
         print(i.response['name'], end=", ")
     print()
+    print()
     return call_count
 
 def species(film6, threads_sp, call_count):
@@ -139,11 +143,21 @@ def species(film6, threads_sp, call_count):
         call_count += 1
     for i in threads_sp:
         i.join()
-    for i in threads_sp:
+    sorted_threads_sp = threads_sp.sort()
+    for i in sorted_threads_sp:
         print(i.response['name'], end=", ")
+    print()
     print()
     return call_count
 
+def get_names(urls):
+    return names
+
+'''
+words = 'the cat is big'.split()
+print(words)
+print(' '.join(words))
+'''
 # def display(threads):
 #     for i in threads:
 #       print(i)
