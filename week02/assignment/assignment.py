@@ -72,85 +72,63 @@ class Request_thread(threading.Thread):
             print('RESPONSE = ', response.status_code)
 
 # TODO Add any functions you need here
-def characters(film6, threads_c, call_count):
+def get_heading():
+    
 
-    for i in film6['characters']:
-      thread = Request_thread(i)
-      
-      threads_c.append(thread)
-    for i in threads_c:
-        i.start()
-        call_count += 1
-    for i in threads_c:
-        i.join()
-    for i in threads_c:
-        print(i.response['name'], end=", ")
+    print(f'Title: Revenge of the Sith')
+    print(f'Director: George Lucas')
+    print(f'Producer: Rick McCallum')
+    print(f'Released: 05/19/2005')
     print()
-    print()
-    return call_count
 
-def planets(film6, threads_p, call_count):
-    for i in film6['planets']:
-        thread = Request_thread(i)
-        threads_p.append(thread)
-    for i in threads_p:
-        i.start()
-        call_count += 1
-    for i in threads_p:
-        i.join()
-    for i in threads_p:
-        print(i.response['name'], end=", ")
-    print()
-    print()
-    return call_count
-
-def starships(film6, threads_s, call_count):
-    for i in film6['starships']:
-        thread = Request_thread(i)
-        threads_s.append(thread)
-    for i in threads_s:
-        i.start()
-        call_count += 1
-    for i in threads_s:
-        i.join()
-    for i in threads_s:
-        print(i.response['name'], end=", ")
-    print()
-    print()
-    return call_count
-
-def vehicles(film6, threads_v, call_count):
-    for i in film6['vehicles']:
-        thread = Request_thread(i)
-        threads_v.append(thread)
-    for i in threads_v:
-        i.start()
-        call_count += 1
-    for i in threads_v:
-        i.join()
-    for i in threads_v:
-        print(i.response['name'], end=", ")
-    print()
-    print()
-    return call_count
-
-def species(film6, threads_sp, call_count):
+def threads(film6, threads_c, threads_v, threads_s, threads_sp, threads_p, call_count):
     for i in film6['species']:
         thread = Request_thread(i)
         threads_sp.append(thread)
+    for i in film6['vehicles']:
+        thread = Request_thread(i)
+        threads_v.append(thread)
+    for i in film6['starships']:
+        thread = Request_thread(i)
+        threads_s.append(thread)
+    for i in film6['planets']:
+        thread = Request_thread(i)
+        threads_p.append(thread)
+    for i in film6['characters']:
+      thread = Request_thread(i)
+      threads_c.append(thread)
     for i in threads_sp:
+        i.start()
+        call_count += 1
+    for i in threads_s:
+        i.start()
+        call_count += 1
+    for i in threads_v:
+        i.start()
+        call_count += 1
+    for i in threads_c:
+        i.start()
+        call_count += 1
+    for i in threads_p:
         i.start()
         call_count += 1
     for i in threads_sp:
         i.join()
-    sorted_threads_sp = threads_sp.sort()
-    for i in sorted_threads_sp:
-        print(i.response['name'], end=", ")
-    print()
-    print()
+    for i in threads_s:
+        i.join()
+    for i in threads_v:
+        i.join()
+    for i in threads_c:
+        i.join()
+    for i in threads_p:
+        i.join()
     return call_count
 
 def get_names(urls):
+    names = []
+    for i in urls:
+        names.append(i.response['name'])
+    names.sort()
     return names
 
 '''
@@ -158,9 +136,11 @@ words = 'the cat is big'.split()
 print(words)
 print(' '.join(words))
 '''
-# def display(threads):
-#     for i in threads:
-#       print(i)
+def display(threads):
+    for i in threads:
+      print(i, end=', ')
+    print()
+    print()
         
 def main():
     log = Log(show_terminal=True)
@@ -180,12 +160,26 @@ def main():
     film6 = Request_thread(f'{top.response["films"]}6')
     film6.start()
     film6.join()
+    print(film6.response)
     global call_count
-    call_count = characters(film6.response, threads_c, call_count)
-    call_count = planets(film6.response, threads_p, call_count)
-    call_count = starships(film6.response, threads_s, call_count)
-    call_count = vehicles(film6.response, threads_v, call_count)
-    call_count = species(film6.response, threads_sp, call_count)
+    call_count = threads(film6.response, threads_c, threads_v, threads_s, threads_sp, threads_p, call_count)
+    names_c = get_names(threads_c)
+    names_v = get_names(threads_v)
+    names_s = get_names(threads_s)
+    names_sp = get_names(threads_sp)
+    names_p = get_names(threads_p)
+    get_heading()
+    print(f'Characters: {len(names_c)}')
+    display(names_c)
+    print(f'Planets: {len(names_p)}')
+    display(names_p)
+    print(f'Starships: {len(names_s)}')
+    display(names_s)
+    print(f'Species: {len(names_sp)}')
+    display(names_sp)
+    print(f'Vehicles: {len(names_v)}')
+    display(names_v)
+   
     
     # TODO Display results
     # display(threads)
