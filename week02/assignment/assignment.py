@@ -132,6 +132,18 @@ def get_names(urls):
     names.sort()
     return names
 
+def get_names2(urls, names):
+    threads = []
+    
+    for url in urls:
+        thread = Request_thread(url)
+        threads.append(thread)
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    for t in threads:
+        names.append(t.response['name'])
 '''
 words = 'the cat is big'.split()
 print(words)
@@ -146,11 +158,11 @@ def display(threads):
 def main():
     log = Log(show_terminal=True)
     log.start_timer('Starting to retrieve data from the server')
-    threads_c = []
-    threads_v = []
-    threads_s = []
-    threads_sp = []
-    threads_p = []
+    # threads_c = []
+    # threads_v = []
+    # threads_s = []
+    # threads_sp = []
+    # threads_p = []
     
     top = Request_thread(TOP_API_URL)
     top.start()
@@ -160,26 +172,49 @@ def main():
     film6 = Request_thread(f'{top.response["films"]}6')
     film6.start()
     film6.join()
-    print(film6.response)
-    global call_count
-    call_count = threads(film6.response, threads_c, threads_v, threads_s, threads_sp, threads_p, call_count)
-    names_c = get_names(threads_c)
-    names_v = get_names(threads_v)
-    names_s = get_names(threads_s)
-    names_sp = get_names(threads_sp)
-    names_p = get_names(threads_p)
-    get_heading()
-    print(f'Characters: {len(names_c)}')
-    display(names_c)
-    print(f'Planets: {len(names_p)}')
-    display(names_p)
-    print(f'Starships: {len(names_s)}')
-    display(names_s)
-    print(f'Species: {len(names_sp)}')
-    display(names_sp)
-    print(f'Vehicles: {len(names_v)}')
-    display(names_v)
+    # print(film6.response)
+    # global call_count
+    # call_count = threads(film6.response, threads_c, threads_v, threads_s, threads_sp, threads_p, call_count)
+    # names_c = get_names(threads_c)
+    # names_v = get_names(threads_v)
+    # names_s = get_names(threads_s)
+    # names_sp = get_names(threads_sp)
+    # names_p = get_names(threads_p)
+    # get_heading()
+    # print(f'Characters: {len(names_c)}')
+    # display(names_c)
+    # print(f'Planets: {len(names_p)}')
+    # display(names_p)
+    # print(f'Starships: {len(names_s)}')
+    # display(names_s)
+    # print(f'Species: {len(names_sp)}')
+    # display(names_sp)
+    # print(f'Vehicles: {len(names_v)}')
+    # display(names_v)
+
+    c= []
+    v=[]
+    s=[]
+    sp=[]
+    p=[]
    
+    threads = []
+    threads.append(threading.Thread(target=get_names2, args=(film6['characters'], c)))
+    threads.append(threading.Thread(target=get_names2, args=(film6['vehicles'], v)))
+    threads.append(threading.Thread(target=get_names2, args=(film6['starships'], s)))
+    threads.append(threading.Thread(target=get_names2, args=(film6['species'], sp)))
+    threads.append(threading.Thread(target=get_names2, args=(film6['planets'], p)))
+
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    
+    print(c)
+    print(v)
+    print(s)
+    print(sp)
+    print(p)
             
     log.stop_timer('Total Time To complete')
     log.write(f'There were {call_count} calls to the server')

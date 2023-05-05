@@ -38,9 +38,11 @@ GREEN = 1
 BLUE  = 2
 
 
-def create_new_frame(image_file, green_file, process_file):
+def create_new_frame(files):
     """ Creates a new image file from image_file and green_file """
-
+    image_file = files[0]
+    green_file = files[1]
+    process_file = files[2]
     # this print() statement is there to help see which frame is being processed
     print(f'{process_file[-7:-4]}', end=',', flush=True)
 
@@ -83,10 +85,15 @@ if __name__ == '__main__':
     tuple_list = get_file_tuple()
     # TODO Process all frames trying 1 cpu, then 2, then 3, ... to CPU_COUNT
     #      add results to xaxis_cpus and yaxis_times
-    start_time = timeit.default_timer()
-    with mp.Pool(1) as p:
-        p.map(create_new_frame, tuple_list)
-    print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
+    for i in range(1, 13):
+        
+        start_time = timeit.default_timer()
+        with mp.Pool(i) as p:
+            p.map(create_new_frame, tuple_list)
+        print(f'\nTime To Process all images using {i} processes= {timeit.default_timer() - start_time}')
+        log.write(f'\nTime To Process all images using {i} processes= {timeit.default_timer() - start_time}')
+        xaxis_cpus.append(i)
+        yaxis_times.append(timeit.default_timer() - start_time)
 
     # sample code: remove before submitting  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     # process one frame #10
