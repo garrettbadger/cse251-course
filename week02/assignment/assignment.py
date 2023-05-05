@@ -36,6 +36,8 @@ this dictionary to make other API calls for data.
    "vehicles": "http://127.0.0.1:8790/vehicles/", 
    "starships": "http://127.0.0.1:8790/starships/"
 }
+
+Justification: I think I deserve a 4 because my program uses threads to optimize the gathering of I/O bound data and matches the output example.
 """
 
 from datetime import datetime, timedelta
@@ -71,10 +73,9 @@ class Request_thread(threading.Thread):
         else:
             print('RESPONSE = ', response.status_code)
 
-# TODO Add any functions you need here
+
 def get_heading():
     
-
     print(f'Title: Revenge of the Sith')
     print(f'Director: George Lucas')
     print(f'Producer: Rick McCallum')
@@ -151,12 +152,11 @@ def main():
     threads_sp = []
     threads_p = []
     
-    # TODO Retrieve Top API urls
     top = Request_thread(TOP_API_URL)
     top.start()
     top.join()
     
-    # TODO Retireve Details on film 6
+    
     film6 = Request_thread(f'{top.response["films"]}6')
     film6.start()
     film6.join()
@@ -180,10 +180,7 @@ def main():
     print(f'Vehicles: {len(names_v)}')
     display(names_v)
    
-    
-    # TODO Display results
-    # display(threads)
-    
+            
     log.stop_timer('Total Time To complete')
     log.write(f'There were {call_count} calls to the server')
     
