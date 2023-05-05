@@ -16,6 +16,7 @@ import random
 from datetime import datetime, timedelta
 import threading
 import multiprocessing as mp
+from multiprocessing import Array
 from matplotlib.pylab import plt
 import numpy as np
 import string
@@ -144,9 +145,10 @@ class Board():
         print(f'Finding {word}...')
         for row in range(self.size):
             for col in range(self.size):
-                for d in range(0, 8):
-                    if self._word_at_this_location(row, col, d, word):
-                        return True
+                if word[0] == self.board[row][col]: #added by brother comeau to not loop through entire list unless the letter matches
+                    for d in range(0, 8):
+                        if self._word_at_this_location(row, col, d, word):
+                            return True
         return False
 
 
@@ -160,6 +162,10 @@ def main():
     board.display()
 
     start = time.perf_counter()
+    # highlighting = Array(board.highlighting)
+    # with mp.Pool(16) as p:
+    #     p.map(board.find_word, words)
+
     for word in words:
         if not board.find_word(word):
             print(f'Error: Could not find "{word}"')
