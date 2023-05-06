@@ -3,7 +3,11 @@
 Course: CSE 251
 Lesson Week: 03
 File: assignment.py
-Author: <Your Name>
+Author: Garrett Badger
+
+Reasoning: I think I deserve a 4 becuase I was able to get the program to run
+within the assignment parameters. I saw the effects of utilizing multiple 
+processes and I was able to graph the results.  
 
 Purpose: Video Frame Processing
 
@@ -31,7 +35,7 @@ CPU_COUNT = mp.cpu_count() + 4
 
 # TODO Your final video need to have 300 processed frames.  However, while you are 
 # testing your code, set this much lower
-FRAME_COUNT = 20
+FRAME_COUNT = 300
 
 RED   = 0
 GREEN = 1
@@ -65,7 +69,7 @@ def create_new_frame(files):
 # TODO add any functions to need here
 def get_file_tuple():
     tuple_list = []
-    for image_number in range(1, 301):
+    for image_number in range(1, FRAME_COUNT + 1):
         image_file = rf'elephant/image{image_number:03d}.png'
         green_file = rf'green/image{image_number:03d}.png'
         process_file = rf'processed/image{image_number:03d}.png'
@@ -85,7 +89,7 @@ if __name__ == '__main__':
     tuple_list = get_file_tuple()
     # TODO Process all frames trying 1 cpu, then 2, then 3, ... to CPU_COUNT
     #      add results to xaxis_cpus and yaxis_times
-    for i in range(1, 13):
+    for i in range(1, CPU_COUNT + 1):
         
         start_time = timeit.default_timer()
         with mp.Pool(i) as p:
@@ -95,21 +99,7 @@ if __name__ == '__main__':
         xaxis_cpus.append(i)
         yaxis_times.append(timeit.default_timer() - start_time)
 
-    # sample code: remove before submitting  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    # process one frame #10
-    # image_number = 10
-
-    # image_file = rf'elephant/image{image_number:03d}.png'
-    # green_file = rf'green/image{image_number:03d}.png'
-    # process_file = rf'processed/image{image_number:03d}.png'
-
-    # start_time = timeit.default_timer()
-    # create_new_frame(image_file, green_file, process_file)
-    # print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
-    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-    log.write(f'Total Time for ALL processing: {timeit.default_timer() - all_process_time}')
+        log.write(f'Total Time for ALL processing: {timeit.default_timer() - all_process_time}')
 
     # create plot of results and also save it to a PNG file
     plt.plot(xaxis_cpus, yaxis_times, label=f'{FRAME_COUNT}')
