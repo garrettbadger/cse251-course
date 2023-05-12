@@ -1,0 +1,59 @@
+11:08:53| finished reading file
+11:08:53| http://127.0.0.1:8790/people/35
+11:08:54| <Response [200]>
+11:08:54| Padmé Amidala
+11:08:54| http://127.0.0.1:8790/people/18
+11:08:55| <Response [200]>
+11:08:55| Wedge Antilles
+11:08:55| http://127.0.0.1:8790/people/5
+11:08:56| <Response [200]>
+11:08:56| Leia Organa
+11:08:56| http://127.0.0.1:8790/people/79
+11:08:57| <Response [200]>
+11:08:57| Grievous
+11:08:57| http://127.0.0.1:8790/people/3
+11:08:58| <Response [200]>
+11:08:58| R2-D2
+11:08:58| http://127.0.0.1:8790/people/63
+11:08:59| <Response [200]>
+11:08:59| Poggle the Lesser
+11:08:59| http://127.0.0.1:8790/people/55
+11:09:00| <Response [200]>
+11:09:00| Adi Gallia
+11:09:00| http://127.0.0.1:8790/people/56
+11:09:01| <Response [200]>
+11:09:01| Saesee Tiin
+11:09:01| http://127.0.0.1:8790/people/75
+11:09:02| <Response [200]>
+11:09:02| R4-P17
+11:09:02| http://127.0.0.1:8790/people/4
+11:09:03| <Response [200]>
+11:09:03| Darth Vader
+11:09:03| http://127.0.0.1:8790/people/76
+11:09:04| <Response [200]>
+11:09:04| Wat Tambor
+11:09:04| http://127.0.0.1:8790/people/83
+11:09:05| <Response [200]>
+11:09:05| Tion Medon
+11:09:05| http://127.0.0.1:8790/people/67
+11:09:06| <Response [200]>
+11:09:06| Dooku
+11:09:06| http://127.0.0.1:8790/people/13
+11:09:07| <Response [200]>
+11:09:07| Chewbacca
+11:09:07| http://127.0.0.1:8790/people/7
+11:09:08| <Response [200]>
+11:09:08| Beru Whitesun lars
+11:09:08| http://127.0.0.1:8790/people/6
+11:09:09| <Response [200]>
+11:09:09| Owen Lars
+11:09:09| http://127.0.0.1:8790/people/11
+11:09:10| <Response [200]>
+11:09:10| Anakin Skywalker
+11:09:10| http://127.0.0.1:8790/people/58
+11:09:11| <Response [200]>
+11:09:11| Plo Koon
+11:09:11| http://127.0.0.1:8790/people/10
+11:09:12| <Response [200]>
+11:09:12| Obi-Wan Kenobi
+11:09:12| Time to process all URLS = 19.21848160
