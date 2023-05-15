@@ -75,7 +75,8 @@ class Queue251():
 class Factory(threading.Thread):
     """ This is a factory.  It will create cars and place them on the car queue """
 
-    def __init__(self, queue, cars_in_queue, cars_not_in_queue, queu_stats):
+    def __init__(self, queue, cars_in_queue, cars_not_in_queue):
+        threading.Thread.__init__(self)
         # TODO, you need to add arguments that will pass all of data that 1 factory needs
         # to create cars and to place them in a queue.
         self.queue = queue
@@ -102,7 +103,7 @@ class Factory(threading.Thread):
         # signal the dealer that there there are not more cars
         for i in range(MAX_QUEUE_SIZE):
             self.cars_not_in_queue.acquire()
-            self.queue.put(-1)
+            self.queue.put('-1')
             self.cars_in_queue.release()
         pass
 
@@ -111,24 +112,39 @@ class Dealer(threading.Thread):
     """ This is a dealer that receives cars """
 
     def __init__(self, queue, cars_in_queue, cars_not_in_queue, queue_stats):
+        threading.Thread.__init__(self)
         # TODO, you need to add arguments that pass all of data that 1 Dealer needs
         # to sell a car
-        
+        self.queue = queue
+        self.cars_in_queue = cars_in_queue
+        self.cars_not_in_queue = cars_not_in_queue
+        self.queue_stats = queue_stats
         pass
 
     def run(self):
         while True:
+            if sum(self.queue_stats) != 500:
             # TODO Add your code here
-            """
-            take the car from the queue
-            signal the factory that there is an empty slot in the queue
-            size of the queue will at least be 1 because we have to be signaled that there is a car
-            """
+            # item = self.queue.get()
+            # if item != '-1':
+            #     self.queue.put(item)
 
-
-            # Sleep a little after selling a car
-            # Last statement in this for loop - don't change
-            time.sleep(random.random() / (SLEEP_REDUCE_FACTOR))
+                """
+                take the car from the queue
+                signal the factory that there is an empty slot in the queue
+                size of the queue will at least be 1 because we have to be signaled that there is a car
+                """
+                size = self.queue.size()
+                self.queue_stats[size-1] += 1
+                self.cars_in_queue.acquire()
+                self.queue.get()
+                self.cars_not_in_queue.release()
+                
+                # Sleep a little after selling a car
+                # Last statement in this for loop - don't change
+                time.sleep(random.random() / (SLEEP_REDUCE_FACTOR))
+            else:
+                break
 
 
 
@@ -147,15 +163,19 @@ def main():
     queue_stats = [0] * MAX_QUEUE_SIZE
 
     # TODO create your one factory
-    fac = threading.Thread(target=Factory, args=(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats))
+    # fac = threading.Thread(target=Factory, args=(cars_queue, cars_in_queue, cars_not_in_queue))
+    fac = Factory(cars_queue, cars_in_queue, cars_not_in_queue)
     # TODO create your one dealership
-    deal = threading.Thread(target=Dealer, args=(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats))
+    # deal = threading.Thread(target=Dealer, args=(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats))
+    deal = Dealer(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats)
     log.start_timer()
 
     # TODO Start factory and dealership
-
+    fac.start()
+    deal.start()
     # TODO Wait for factory and dealership to complete
-
+    fac.join()
+    deal.join()
     log.stop_timer(f'All {sum(queue_stats)} have been created')
 
     xaxis = [i for i in range(1, MAX_QUEUE_SIZE + 1)]
