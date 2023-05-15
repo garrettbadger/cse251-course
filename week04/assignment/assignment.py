@@ -2,8 +2,8 @@
 Course: CSE 251
 Lesson Week: 04
 File: assignment.py
-Author: <Your name>
-
+Author: Garrett Badger
+Justification: I think I deserve a 4 because I met the requirements provided and successfully implemented 2 semaphores.
 Purpose: Assignment 04 - Factory and Dealership
 
 Instructions:
@@ -125,10 +125,7 @@ class Dealer(threading.Thread):
         while True:
             if sum(self.queue_stats) != 500:
             # TODO Add your code here
-            # item = self.queue.get()
-            # if item != '-1':
-            #     self.queue.put(item)
-
+            
                 """
                 take the car from the queue
                 signal the factory that there is an empty slot in the queue
@@ -163,10 +160,10 @@ def main():
     queue_stats = [0] * MAX_QUEUE_SIZE
 
     # TODO create your one factory
-    # fac = threading.Thread(target=Factory, args=(cars_queue, cars_in_queue, cars_not_in_queue))
+    
     fac = Factory(cars_queue, cars_in_queue, cars_not_in_queue)
     # TODO create your one dealership
-    # deal = threading.Thread(target=Dealer, args=(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats))
+    
     deal = Dealer(cars_queue, cars_in_queue, cars_not_in_queue, queue_stats)
     log.start_timer()
 
