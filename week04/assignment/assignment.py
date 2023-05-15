@@ -103,7 +103,7 @@ class Factory(threading.Thread):
         # signal the dealer that there there are not more cars
         for i in range(MAX_QUEUE_SIZE):
             self.cars_not_in_queue.acquire()
-            self.queue.put('-1')
+            self.queue.put(-1)
             self.cars_in_queue.release()
         pass
 

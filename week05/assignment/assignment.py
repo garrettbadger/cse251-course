@@ -122,7 +122,7 @@ def run_production(factory_count, dealer_count):
     # TODO Create semaphore(s)
     # TODO Create queue
     # TODO Create lock(s)
-    # TODO Create barrier(s)
+    # TODO Create barrier(s) just one barrier and barrier=threading.Barrier(variable for how many barriers you need for the run. Decide if its for factory or dealership)
 
     # This is used to track the number of cars receives by each dealer
     dealer_stats = list([0] * dealer_count)
