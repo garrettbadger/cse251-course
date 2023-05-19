@@ -86,7 +86,7 @@ class Queue251():
 class Factory(threading.Thread):
     """ This is a factory.  It will create cars and place them on the car queue """
 
-    def __init__(self, queue, cars_in_queue, cars_not_in_queue, barrier, factory_stats, id):
+    def __init__(self, queue, cars_in_queue, cars_not_in_queue, barrier, factory_stats, id, dealer_count):
         threading.Thread.__init__(self)
         self.cars_to_produce = random.randint(200, 300)     # Don't change
         self.queue = queue
@@ -95,6 +95,7 @@ class Factory(threading.Thread):
         self.barrier = barrier
         self.factory_stats = factory_stats
         self.id = id
+        self.dealer_count = dealer_count
 
 
     def run(self):
@@ -117,7 +118,7 @@ class Factory(threading.Thread):
         one = self.barrier.wait()
         # TODO "Wake up/signal" the dealerships one more time.  Select one factory to do this
         if one == 0:
-            for i in range(len(self.factory_stats)):
+            for i in range(self.dealer_count):
                 self.cars_not_in_queue.acquire()
                 self.queue.put(-1)
                 self.cars_in_queue.release()
@@ -143,27 +144,25 @@ class Dealer(threading.Thread):
     def run(self):
         while True:
             # TODO handle a car
-            if len(self.queue.items) > 0:
-                if self.queue.items[0] == -1:
-                    break
-                else:
+            # if 
              
-                    self.cars_in_queue.acquire()
-                    self.queue.get() 
-                    
-                    self.cars_not_in_queue.release()
-                    self.queue_stats[self.id] += 1
-                    # Sleep a little - don't change.  This is the last line of the loop
-                    time.sleep(random.random() / (SLEEP_REDUCE_FACTOR + 0))
+                self.cars_in_queue.acquire()
+                item = self.queue.get() 
+                if item == -1:
+                    break
+                self.cars_not_in_queue.release()
+                self.queue_stats[self.id] += 1
+                # Sleep a little - don't change.  This is the last line of the loop
+                time.sleep(random.random() / (SLEEP_REDUCE_FACTOR + 0))
             
             # else:
             #     break 
             
-                """
-                take the car from the queue
-                signal the factory that there is an empty slot in the queue
-                size of the queue will at least be 1 because we have to be signaled that there is a car
-                """
+        """
+        take the car from the queue
+        signal the factory that there is an empty slot in the queue
+        size of the queue will at least be 1 because we have to be signaled that there is a car
+        """
                 # size = self.queue.get_max_size()
                 
                
@@ -191,7 +190,7 @@ def run_production(factory_count, dealer_count):
     factory_stats = list([0] * factory_count)
 
     # TODO create your factories, each factory will create CARS_TO_CREATE_PER_FACTORY
-    factories = [Factory(queue, cars_in_queue, cars_not_in_queue, barriers, factory_stats, i) for i in range(factory_count)]
+    factories = [Factory(queue, cars_in_queue, cars_not_in_queue, barriers, factory_stats, i, dealer_count) for i in range(factory_count)]
     # TODO create your dealerships
     dealerships = [Dealer(queue, cars_in_queue, cars_not_in_queue, dealer_stats, i) for i in range(dealer_count)]
     log.start_timer()
