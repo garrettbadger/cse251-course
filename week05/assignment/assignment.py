@@ -111,20 +111,17 @@ class Factory(threading.Thread):
             self.factory_stats[self.id] += 1
             self.cars_in_queue.release()
 
-        for i in range(len(self.factory_stats)):
-            self.cars_not_in_queue.acquire()
-            self.queue.put(-1)
-            self.cars_in_queue.release()
+        
 
         # TODO wait until all of the factories are finished producing cars
         one = self.barrier.wait()
         # TODO "Wake up/signal" the dealerships one more time.  Select one factory to do this
         if one == 0:
-            print(f'Process {self.id}: ')
-            self.cars_in_queue.release()
-            # self.queue.put(-1)
-            self.cars_not_in_queue.acquire()
-            
+            for i in range(len(self.factory_stats)):
+                self.cars_not_in_queue.acquire()
+                self.queue.put(-1)
+                self.cars_in_queue.release()
+                
         pass
 
 
