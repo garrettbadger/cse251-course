@@ -22,7 +22,7 @@ import queue
 #Include cse 251 common Python files
 from cse251 import *
 
-PRIME_PROCESS_COUNT = 8
+PRIME_PROCESS_COUNT = 10
 
 def is_prime(n: int) -> bool:
     """Primality test using 6k+-1 optimization.
@@ -40,30 +40,40 @@ def is_prime(n: int) -> bool:
     return True
 
 # TODO create read_thread function
-def read_thread(filename, q, log):
+def read_thread(filename, q, log, amount_of_numbers_in_queue, unused_spots_in_queue):
     """ This thread reading the data file and places the values in the data_queue """
 
     # TODO Open the data file "urls.txt" and place items into a queue
     with open(filename) as file:
         for line in file:
             value = line.strip()
+            unused_spots_in_queue.acquire()
             q.put(int(value))
+            amount_of_numbers_in_queue.release()
+
         log.write(q.qsize())
     for _ in range(PRIME_PROCESS_COUNT):
+        unused_spots_in_queue.acquire()
         q.put(-1)
+        amount_of_numbers_in_queue.release()
  
 # TODO create prime_process function
-def process_function(process_id, q, primes):
+def process_function(q, primes, amount_of_numbers_in_queue, unused_spots_in_queue):
     while True:
         start_time = time.perf_counter()
-        if q.get() == -1:
-            return
-        else:
         
-            prime = q.get()
+        amount_of_numbers_in_queue.acquire()
+        prime = q.get()
+        unused_spots_in_queue.release()
+
+        if prime < 0:
+            break
+
+        if is_prime(prime):
+            print(prime)
+            primes.append(prime)
             
-            if is_prime(prime):
-                primes.append(prime)
+
         total_time = time.perf_counter() - start_time
 
     
@@ -90,16 +100,22 @@ def main():
     # TODO Create shared data structures
     q = mp.Queue()
     primes = mp.Manager().list()
+    # must = 10 always
+
+    amount_of_numbers_in_queue = mp.Semaphore(0)
+    unused_spots_in_queue = mp.Semaphore(10)
+
     # TODO create reading thread
-    reader = threading.Thread(target=read_thread, args=(filename, q, log,))
+    reader = threading.Thread(target=read_thread, args=(filename, q, log, amount_of_numbers_in_queue, unused_spots_in_queue))
     # TODO create prime processes
     
-    processes = [mp.Process(target=process_function, args=(i, q, primes)) for i in range(PRIME_PROCESS_COUNT)]
+    processes = [mp.Process(target=process_function, args=(q, primes, amount_of_numbers_in_queue, unused_spots_in_queue)) for _ in range(PRIME_PROCESS_COUNT)]
     
     # TODO Start them all
-    reader.start()
     for p in processes:
         p.start()
+    reader.start()
+    
 
     
     # TODO wait for them to complete

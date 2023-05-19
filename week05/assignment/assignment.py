@@ -144,26 +144,18 @@ class Dealer(threading.Thread):
     def run(self):
         while True:
             # TODO handle a car
-            # if 
+            
              
-                self.cars_in_queue.acquire()
-                item = self.queue.get() 
-                if item == -1:
-                    break
-                self.cars_not_in_queue.release()
-                self.queue_stats[self.id] += 1
-                # Sleep a little - don't change.  This is the last line of the loop
-                time.sleep(random.random() / (SLEEP_REDUCE_FACTOR + 0))
+            self.cars_in_queue.acquire()
+            item = self.queue.get() 
+            if item == -1:
+                break
+            self.cars_not_in_queue.release()
+            self.queue_stats[self.id] += 1
+            # Sleep a little - don't change.  This is the last line of the loop
+            time.sleep(random.random() / (SLEEP_REDUCE_FACTOR + 0))
             
-            # else:
-            #     break 
             
-        """
-        take the car from the queue
-        signal the factory that there is an empty slot in the queue
-        size of the queue will at least be 1 because we have to be signaled that there is a car
-        """
-                # size = self.queue.get_max_size()
                 
                
             
@@ -227,7 +219,7 @@ def main(log):
         log.write(f'Dealerships    : {dealerships}')
         log.write(f'Run Time       : {run_time:.4f}')
         log.write(f'Max queue size : {max_queue_size}')
-        log.write(f'Factor Stats   : {factory_stats}')
+        log.write(f'Factory Stats  : {factory_stats}')
         log.write(f'Dealer Stats   : {dealer_stats}')
         log.write('')
 
