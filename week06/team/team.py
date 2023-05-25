@@ -37,7 +37,7 @@ def sender(filename, parent):
             line = line.split(' ')
             # parent.send(line)
             for word in line:
-                if word != len(line)-1 or word != len(line)-2:
+                if word != line[-1]:
                     parent.send(word)
                     parent.send(' ')
                 else:
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     copy_file(log, 'gettysburg.txt', 'gettysburg-copy.txt')
     
     # After you get the gettysburg.txt file working, uncomment this statement
-    # copy_file(log, 'bom.txt', 'bom-copy.txt')
+    copy_file(log, 'bom.txt', 'bom-copy.txt')
 

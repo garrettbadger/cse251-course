@@ -1,0 +1,11 @@
+09:30:05| Marble count                = 1000
+09:30:05| settings["creator-delay"]   = 0.01
+09:30:05| settings["bag-count"]       = 7
+09:30:05| settings["bagger-delay"]    = 0.05
+09:30:05| settings["assembler-delay"] = 0.05
+09:30:05| settings["wrapper-delay"]   = 0.05
+09:30:05| Create the processes
+09:30:05| Starting the processes
+09:30:05| Waiting for processes to finish
+09:30:17| Contents of boxes.txt
+09:30:17| Number of gifts created: 0
