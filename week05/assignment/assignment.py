@@ -2,8 +2,8 @@
 Course: CSE 251
 Lesson Week: 05
 File: assignment.py
-Author: <Your name>
-
+Author: Garrett Badger
+Justification: I think I deserve a 4 because the program fulfills requirements while using a barrier.
 Purpose: Assignment 05 - Factories and Dealers
 
 Instructions:
