@@ -2,7 +2,9 @@
 Course: CSE 251
 Lesson Week: 06
 File: assignment.py
-Author: <Your name here>
+Author: Garrett Badger
+Justification: I think that I deserve a 4 because my program correctly utilizes pipes in order to 
+complete the program as outlined.
 Purpose: Processing Plant
 Instructions:
 - Implement the classes to allow gifts to be created.
@@ -125,16 +127,16 @@ class Bagger(mp.Process):
             sleep the required amount
         tell the assembler that there are no more bags
         '''
-        bag = []
+        bag = Bag()
         while True:
             marble = self.child.recv()
             if marble == -1:
                 break
-            bag.append(marble)
-            if len(bag) == self.count:
+            bag.add(marble)
+            if bag.get_size() == self.count:
                 self.parent.send(bag)
                 time.sleep(self.delay)
-                bag = []
+                bag = Bag()
                 
         self.parent.send(-1)
         self.parent.close()
