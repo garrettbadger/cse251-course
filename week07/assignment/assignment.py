@@ -10,9 +10,9 @@ Instructions:  See I-Learn
 TODO
 
 For my pool sizes I set them all to 1 and then just modified one of the pools to have more than a size of 1
-this told me that just changing the pool size of one of the pools didn't have an effect on the overall time.
-Because of this I chose to increment them all together. The best time I got on my system was 7.856 seconds with
-all 5 pools having a pool size of 9.
+this told me that the word pool was the bottleneck becuase when i increased the pool size on word the time finally
+went down. The best time I got on my system was 9.5 seconds with
+all the pools having a size of 6 except the word pool which had a size of 12.
 
 
 """
@@ -83,13 +83,13 @@ def task_word(word):
             - or -
         {word} not found *****
     """
-    if len(word_list) <= 0:
-        word_list = []
-        with open('words.txt') as f:
-            for line in f:
-                line = f.readline()
-                line = line.rstrip()
-                word_list.append(line)
+    
+    word_list = []
+    with open('words.txt') as f:
+        for line in f:
+            line = f.readline()
+            line = line.rstrip()
+            word_list.append(line)
     if word in word_list:
         result = f'{word} found'
         return result
@@ -167,11 +167,11 @@ def main():
 
     # TODO Create process pools
     pools = []
-    name_pool = mp.Pool(9)
-    sum_pool = mp.Pool(9)
-    prime_pool = mp.Pool(9)
-    upper_pool = mp.Pool(9)
-    word_pool = mp.Pool(9)
+    name_pool = mp.Pool(6)
+    sum_pool = mp.Pool(6)
+    prime_pool = mp.Pool(6)
+    upper_pool = mp.Pool(6)
+    word_pool = mp.Pool(12)
     pools.append(name_pool)
     pools.append(sum_pool)
     pools.append(prime_pool)
