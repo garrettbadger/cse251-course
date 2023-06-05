@@ -9,8 +9,10 @@ Instructions:  See I-Learn
 
 TODO
 
-Add you comments here on the pool sizes that you used for your assignment and
-why they were the best choices.
+For my pool sizes I set them all to 1 and then just modified one of the pools to have more than a size of 1
+this told me that just changing the pool size of one of the pools didn't have an effect on the overall time.
+Because of this I chose to increment them all together. The best time I got on my system was 7.856 seconds with
+all 5 pools having a pool size of 9.
 
 
 """
@@ -64,9 +66,13 @@ def task_prime(value):
     """
     prime = is_prime(value)
     if prime:
-        result_primes.append(f'{value} is prime')
+        result = f'{value:,} is prime'
+        return result
+        
     else:
-        result_primes.append(f'{value} is not prime')
+        result = f'{value:,} is not prime'
+        return result
+        
     
 
 def task_word(word):
@@ -77,13 +83,21 @@ def task_word(word):
             - or -
         {word} not found *****
     """
-    with open('words.txt') as f:
-        for line in f:
-            line = line.split(' ')
-            if line == word:
-                result_words.append(f'{word} found')
-            else:
-                result_words.append(f'{word} not found')
+    if len(word_list) <= 0:
+        word_list = []
+        with open('words.txt') as f:
+            for line in f:
+                line = f.readline()
+                line = line.rstrip()
+                word_list.append(line)
+    if word in word_list:
+        result = f'{word} found'
+        return result
+        
+    else:
+        result = f'{word} not found'
+        return result
+        
     
 
 def task_upper(text):
@@ -92,7 +106,9 @@ def task_upper(text):
         {text} ==>  uppercase version of {text}
     """
     upper_text = text.upper()
-    result_upper.append(f'{text} ==> {upper_text}')
+    result = f'{text} ==> {upper_text}'
+    return result
+    
     
 
 def task_sum(start_value, end_value):
@@ -102,7 +118,10 @@ def task_sum(start_value, end_value):
     """
     new_term = (end_value - start_value + 1) / 1
     total = (new_term / 2) * (start_value + end_value)
-    result_sums.append(f'sum of {start_value} to {end_value} = {total}')
+    result = f'sum of {start_value:,} to {end_value:,} = {total:,}'
+    return result
+    
+
     
 
 def task_name(url):
@@ -117,11 +136,29 @@ def task_name(url):
         # Check the status code to see if the request succeeded.
     if response.status_code == 200:
         response = response.json()
-        result_names.append(f'{url} has name {response["name"]}')
+        result = f'{url} has name {response["name"]}'
+        return result
+        
     else:
-        result_names.append(f'{url} had an error receiving information error: {response.status_code}')
+        result = f'{url} had an error receiving information error: {response.status_code}'
+        return result
+        
        
     
+def prime_callback(result):
+    result_primes.append(result)
+
+def upper_callback(result):
+    result_upper.append(result)
+
+def word_callback(result):
+    result_words.append(result)
+
+def sum_callback(result):
+    result_sums.append(result)
+
+def name_callback(result):
+    result_names.append(result)
 
 
 def main():
@@ -129,11 +166,17 @@ def main():
     log.start_timer()
 
     # TODO Create process pools
-    name_pool = mp.Pool(4)
-    sum_pool = mp.Pool(4)
-    prime_pool = mp.Pool(4)
-    upper_pool = mp.Pool(4)
-    word_pool = mp.Pool(4)
+    pools = []
+    name_pool = mp.Pool(9)
+    sum_pool = mp.Pool(9)
+    prime_pool = mp.Pool(9)
+    upper_pool = mp.Pool(9)
+    word_pool = mp.Pool(9)
+    pools.append(name_pool)
+    pools.append(sum_pool)
+    pools.append(prime_pool)
+    pools.append(word_pool)
+    pools.append(upper_pool)
     count = 0
     task_files = glob.glob("*.task")
     for filename in task_files:
@@ -144,20 +187,28 @@ def main():
         count += 1
         task_type = task['task']
         if task_type == TYPE_PRIME:
-            task_prime(task['value'])
+            # task_prime(task['value'])
+            prime_pool.apply_async(task_prime, args=(task['value'],), callback=prime_callback)
         elif task_type == TYPE_WORD:
-            task_word(task['word'])
+            # task_word(task['word'])
+            word_pool.apply_async(task_word, args=(task['word'],), callback=word_callback)
         elif task_type == TYPE_UPPER:
-            task_upper(task['text'])
+            # task_upper(task['text'])
+            upper_pool.apply_async(task_upper, args=(task['text'],), callback=upper_callback)
         elif task_type == TYPE_SUM:
-            task_sum(task['start'], task['end'])
+            # task_sum(task['start'], task['end'])
+            sum_pool.apply_async(task_sum, args=(task['start'], task['end'],), callback=sum_callback)
         elif task_type == TYPE_NAME:
-            task_name(task['url'])
+            # task_name(task['url'])
+            name_pool.apply_async(task_name, args=(task['url'],), callback=name_callback)
         else:
             log.write(f'Error: unknown task type {task_type}')
 
     # TODO start and wait pools
-    
+    for p in pools:
+        p.close()
+    for p in pools:
+        p.join()
 
     # Do not change the following code (to the end of the main function)
     def log_list(lst, log):
