@@ -62,7 +62,12 @@ def task_prime(value):
             - or -
         {value} is not prime
     """
-    pass
+    prime = is_prime(value)
+    if prime:
+        result_primes.append(f'{value} is prime')
+    else:
+        result_primes.append(f'{value} is not prime')
+    
 
 def task_word(word):
     """
@@ -72,21 +77,33 @@ def task_word(word):
             - or -
         {word} not found *****
     """
-    pass
+    with open('words.txt') as f:
+        for line in f:
+            line = line.split(' ')
+            if line == word:
+                result_words.append(f'{word} found')
+            else:
+                result_words.append(f'{word} not found')
+    
 
 def task_upper(text):
     """
     Add the following to the global list:
         {text} ==>  uppercase version of {text}
     """
-    pass
+    upper_text = text.upper()
+    result_upper.append(f'{text} ==> {upper_text}')
+    
 
 def task_sum(start_value, end_value):
     """
     Add the following to the global list:
         sum of {start_value:,} to {end_value:,} = {total:,}
     """
-    pass
+    new_term = (end_value - start_value + 1) / 1
+    total = (new_term / 2) * (start_value + end_value)
+    result_sums.append(f'sum of {start_value} to {end_value} = {total}')
+    
 
 def task_name(url):
     """
@@ -96,7 +113,15 @@ def task_name(url):
             - or -
         {url} had an error receiving the information
     """
-    pass
+    response = requests.get(url)
+        # Check the status code to see if the request succeeded.
+    if response.status_code == 200:
+        response = response.json()
+        result_names.append(f'{url} has name {response["name"]}')
+    else:
+        result_names.append(f'{url} had an error receiving information error: {response.status_code}')
+       
+    
 
 
 def main():
@@ -104,7 +129,11 @@ def main():
     log.start_timer()
 
     # TODO Create process pools
-
+    name_pool = mp.Pool(4)
+    sum_pool = mp.Pool(4)
+    prime_pool = mp.Pool(4)
+    upper_pool = mp.Pool(4)
+    word_pool = mp.Pool(4)
     count = 0
     task_files = glob.glob("*.task")
     for filename in task_files:
@@ -128,7 +157,7 @@ def main():
             log.write(f'Error: unknown task type {task_type}')
 
     # TODO start and wait pools
-
+    
 
     # Do not change the following code (to the end of the main function)
     def log_list(lst, log):
