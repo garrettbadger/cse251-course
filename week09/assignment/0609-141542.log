@@ -1,0 +1,24 @@
+14:15:42| ****************************************
+14:15:42| Part 1
+14:15:42| 
+14:15:42| File: verysmall.bmp
+14:15:42| Number of drawing commands for = 106
+14:15:47| Found path has length          = 10
+14:15:47| 
+14:15:47| File: verysmall-loops.bmp
+14:15:47| Number of drawing commands for = 322
+14:15:49| Found path has length          = 62
+14:15:49| 
+14:15:49| File: small.bmp
+14:15:49| Number of drawing commands for = 1786
+14:15:56| Found path has length          = 78
+14:15:56| 
+14:15:56| File: small-loops.bmp
+14:15:56| Number of drawing commands for = 1482
+14:15:59| Found path has length          = 182
+14:15:59| 
+14:15:59| File: small-odd.bmp
+14:15:59| Number of drawing commands for = 2358
+14:16:10| Found path has length          = 48
+14:16:10| 
+14:16:10| File: small-open.bmp

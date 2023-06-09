@@ -55,23 +55,22 @@ def solve_path(maze):
         # update path variable
         for m in poss:
             if maze.can_move_here(*m):
-                maze.move(m[0], m[1], COLOR)
-                
-            
-            if _solve(*m) == False:
-                maze.restore(m[0], m[1])
-            else:
+                maze.move(*m, COLOR)
                 path.append(m)
-                
-            
-                
-                
-            
-            
-            
+            if _solve(*m):
+                return True
+            else:
+                maze.restore(*m)
+                if len(path) > 0:
+                    path.pop()
+        return False        
+
 
     start = maze.get_start_pos()
+    path.append(start)
+    maze.move(*start, COLOR)
     _solve(start[0], start[1])
+    
     
 
 
