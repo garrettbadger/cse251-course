@@ -152,7 +152,7 @@ def main():
     s=[]
     sp=[]
     p=[]
-   
+    
     pool = mp.Pool(5)
     pool.apply_async(get_names2, args = (film6.response['characters'], c, ), callback=display)
     pool.apply_async(get_names2, args=(film6.response['vehicles'], v,), callback=display)
