@@ -75,7 +75,9 @@ def get_color():
 def solve_find_end(maze):
     """ finds the end position using threads.  Nothing is returned """
     # When one of the threads finds the end position, stop all of them
-
+    global stop
+    stop = False
+    #inner recrusion funciton
     pass
 
 
@@ -83,7 +85,7 @@ def find_end(log, filename, delay):
     """ Do not change this function """
 
     global thread_count
-
+    global speed
     # create a Screen Object that will contain all of the drawing commands
     screen = Screen(SCREEN_SIZE, SCREEN_SIZE)
     screen.background((255, 255, 0))

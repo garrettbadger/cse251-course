@@ -26,12 +26,55 @@ COLOR = (0, 0, 255)
 
 # TODO add any functions
 
+
 def solve_path(maze):
     """ Solve the maze and return the path found between the start and end positions.  
         The path is a list of positions, (x, y) """
         
     # TODO start add code here
     path = []
+    #recursive function
+    # def _solve(maze, pos, path): # needs to return true or false if you found the end or not.
+    #     pass
+    # _solve(maze, maze.get_start(), path)
+
+
+    def _solve(x, y): # needs to return true or false if you found the end or not.
+       
+        #base case
+        if maze.at_end(x, y):
+            return True
+        
+        poss = maze.get_possible_moves(x, y)
+
+        if len(poss) == 0:
+            return False
+        
+        # do stuff
+        # try moves from the possible list
+        # update path variable
+        for m in poss:
+            if maze.can_move_here(*m):
+                maze.move(m[0], m[1], COLOR)
+                
+            
+            if _solve(*m) == False:
+                maze.restore(m[0], m[1])
+            else:
+                path.append(m)
+                
+            
+                
+                
+            
+            
+            
+
+    start = maze.get_start_pos()
+    _solve(start[0], start[1])
+    
+
+
     return path
 
 
