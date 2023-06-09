@@ -2,9 +2,10 @@
 Course: CSE 251
 Lesson Week: 07
 File: assingnment.py
-Author: <Your name here>
+Author: Garrett Badger
 Purpose: Process Task Files
-
+Justification: I think I deserve a 4 because I was able to complete the project according to the directions
+and correctly implement async pools.
 Instructions:  See I-Learn
 
 TODO
