@@ -78,6 +78,29 @@ def solve_find_end(maze):
     global stop
     stop = False
     #inner recrusion funciton
+    def _solve(x, y): # needs to return true or false if you found the end or not.
+       
+        #base case
+        if maze.at_end(x, y):
+            return True
+        
+        poss = maze.get_possible_moves(x, y)
+
+        if len(poss) == 0:
+            return False
+        
+        # do stuff
+        # try moves from the possible list
+        # update path variable
+        for m in poss:
+            if maze.can_move_here(*m):
+                maze.move(*m, COLOR)
+                
+            if _solve(*m):
+                return True
+            else:
+                maze.restore(*m)
+        return False        
     pass
 
 
