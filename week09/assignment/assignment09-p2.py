@@ -73,36 +73,56 @@ def get_color():
 
 
 def solve_find_end(maze):
-    """ finds the end position using threads.  Nothing is returned """
+ 
+    """ finds the end position using threads. Nothing is returned """
     # When one of the threads finds the end position, stop all of them
     global stop
     stop = False
-    #inner recrusion funciton
-    def _solve(x, y): # needs to return true or false if you found the end or not.
-       
-        #base case
+    global thread_count
+    thread_count = 0
+  
+
+    # Inner recursive function
+    def _solve(x, y, color):
+        global stop
+        global thread_count
+
+        if stop:
+            return
+
         if maze.at_end(x, y):
-            return True
-        
+            stop = True
+            return
+
         poss = maze.get_possible_moves(x, y)
 
         if len(poss) == 0:
-            return False
+            return
         
-        # do stuff
-        # try moves from the possible list
-        # update path variable
         for m in poss:
             if maze.can_move_here(*m):
-                maze.move(*m, COLOR)
-                
-            if _solve(*m):
-                return True
-            else:
-                maze.restore(*m)
-        return False        
-    pass
-
+                maze.move(*m, color)
+                new_poss = maze.get_possible_moves(*m)
+                if len(new_poss) > 1:
+                    if m == new_poss[0]:
+                        _solve(*m, color)
+                    else:
+                        thread_count += 1
+                        thread = threading.Thread(target=_solve, args=(*m, get_color()))
+                        thread.start()
+                        thread.join()
+                else:
+                    _solve(*m, color)
+            
+    start = maze.get_start_pos()
+    color = get_color()
+    maze.move(*start, color)
+    thread = threading.Thread(target=_solve, args=(start[0], start[1], color))
+    thread_count+=1
+    thread.start()
+    thread.join()
+    
+    
 
 def find_end(log, filename, delay):
     """ Do not change this function """
@@ -147,7 +167,7 @@ def find_ends(log):
         ('small-odd.bmp', True),
         ('small-open.bmp', False),
         ('large.bmp', False),
-        ('large-loops.bmp', False)
+        ('large-loops.bmp', False) 
     )
 
     log.write('*' * 40)

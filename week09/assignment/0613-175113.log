@@ -1,0 +1,35 @@
+17:51:13| ****************************************
+17:51:13| Part 2
+17:51:13| 
+17:51:13| File: verysmall.bmp
+17:51:13| Number of drawing commands = 54
+17:51:13| Number of threads created  = 2
+17:51:15| 
+17:51:15| File: verysmall-loops.bmp
+17:51:15| Number of drawing commands = 190
+17:51:15| Number of threads created  = 2
+17:51:15| 
+17:51:15| File: small.bmp
+17:51:15| Number of drawing commands = 1094
+17:51:15| Number of threads created  = 2
+17:51:15| 
+17:51:15| File: small-loops.bmp
+17:51:15| Number of drawing commands = 1098
+17:51:15| Number of threads created  = 2
+17:51:16| 
+17:51:16| File: small-odd.bmp
+17:51:16| Number of drawing commands = 1094
+17:51:16| Number of threads created  = 2
+17:51:16| 
+17:51:16| File: small-open.bmp
+17:51:16| Number of drawing commands = 1098
+17:51:16| Number of threads created  = 2
+17:51:16| 
+17:51:16| File: large.bmp
+17:51:16| Number of drawing commands = 16646
+17:51:16| Number of threads created  = 2
+17:51:17| 
+17:51:17| File: large-loops.bmp
+17:51:17| Number of drawing commands = 16646
+17:51:17| Number of threads created  = 2
+17:51:17| ****************************************

@@ -1,0 +1,14 @@
+17:44:31| ****************************************
+17:44:31| Part 2
+17:44:31| 
+17:44:31| File: verysmall.bmp
+17:44:31| Number of drawing commands = 76
+17:44:31| Number of threads created  = 3
+17:44:42| 
+17:44:42| File: verysmall-loops.bmp
+17:44:42| Number of drawing commands = 258
+17:44:42| Number of threads created  = 6
+17:44:45| 
+17:44:45| File: small.bmp
+17:44:45| Number of drawing commands = 1836
+17:44:45| Number of threads created  = 25
