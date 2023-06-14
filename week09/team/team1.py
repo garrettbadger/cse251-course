@@ -55,11 +55,46 @@ import threading
 
 PHILOSOPHERS = 5
 MAX_MEALS = PHILOSOPHERS * 5
+global meals_eaten 
+meals_eaten = 0
+
+
+class Philosopher(threading.Thread):
+    def __init__(self, l_fork, r_fork):
+        threading.Thread.__init__(self)
+        self.l_fork = l_fork
+        self.r_fork = r_fork
+        self.ate = 0
+    def run(self):
+       global meals_eaten
+       
+       if meals_eaten < MAX_MEALS:
+          self.l_fork.acquire()
+          self.r_fork.acquire()
+          time.sleep(2) 
+          self.l_fork.release()
+          self.r_fork.release()
+          meals_eaten += 1
+          self.thinking()      
+    def thinking(self):
+        time.sleep(2)
+
+
+
+    
+
 
 def main():
     # TODO - create the forks
+    forks = [threading.Lock() for i in range(PHILOSOPHERS)]
+    
     # TODO - create PHILOSOPHERS philosophers
+    philosophers = [Philosopher(forks[i], forks[i % PHILOSOPHERS]) for i in range(PHILOSOPHERS)]
     # TODO - Start them eating and thinking
+    for phil in philosophers:
+        phil.start()
+    for phil in philosophers:
+        phil.join()
     # TODO - Display how many times each philosopher ate
 
     pass
