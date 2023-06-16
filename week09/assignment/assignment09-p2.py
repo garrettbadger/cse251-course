@@ -87,12 +87,14 @@ def solve_find_end(maze):
         global stop
         global thread_count
 
+        if maze.at_end(x, y):
+            stop = True
+            
+        
         if stop:
             return
 
-        if maze.at_end(x, y):
-            stop = True
-            return
+        
 
         poss = maze.get_possible_moves(x, y)
 
