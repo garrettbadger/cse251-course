@@ -98,8 +98,15 @@ def solve_find_end(maze):
 
         if len(poss) == 0:
             return
-        
+        # get moves
+        # create threads
+        # go down path myself
+        # then join
+        # maze is a critical section; get in and out as fast as possible
+        # get_possible needs to be locked
+        # might be hanging because of threads not joining properly
         for m in poss:
+            # all below maze methods need a lock
             if maze.can_move_here(*m):
                 maze.move(*m, color)
                 new_poss = maze.get_possible_moves(*m)

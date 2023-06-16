@@ -28,35 +28,35 @@ such that no philosopher will starve
 
 Instructions:
 
-        **************************************************
-        ** DO NOT search for a solution on the Internet **
-        ** your goal is not to copy a solution, but to  **
-        ** work out this problem.                       **
-        **************************************************
+				**************************************************
+				** DO NOT search for a solution on the Internet **
+				** your goal is not to copy a solution, but to  **
+				** work out this problem.                       **
+				**************************************************
 
 - This is the same problem as last team activity.  However, you will implement a waiter.  
-  When a philosopher wants to eat, it will ask the waiter if it can.  If the waiter 
-  indicates that a philosopher can eat, the philosopher will pick up each fork and eat.  
-  There must not be a issue picking up the two forks since the waiter is in control of 
-  the forks and when philosophers eat.  When a philosopher is finished eating, it will 
-  informs the waiter that he/she is finished.  If the waiter indicates to a philosopher
-  that they can not eat, the philosopher will wait between 1 to 3 seconds and try again.
+	When a philosopher wants to eat, it will ask the waiter if it can.  If the waiter 
+	indicates that a philosopher can eat, the philosopher will pick up each fork and eat.  
+	There must not be a issue picking up the two forks since the waiter is in control of 
+	the forks and when philosophers eat.  When a philosopher is finished eating, it will 
+	informs the waiter that he/she is finished.  If the waiter indicates to a philosopher
+	that they can not eat, the philosopher will wait between 1 to 3 seconds and try again.
 
 - You have Locks and Semaphores that you can use.
 - Remember that lock.acquire() has an argument called timeout.
 - philosophers need to eat for 1 to 3 seconds when they get both forks.  
-  When the number of philosophers has eaten MAX_MEALS times, stop the philosophers
-  from trying to eat and any philosophers eating will put down their forks when finished.
+	When the number of philosophers has eaten MAX_MEALS times, stop the philosophers
+	from trying to eat and any philosophers eating will put down their forks when finished.
 - philosophers need to think for 1 to 3 seconds when they are finished eating.  
 - When a philosopher is not eating, it will think for 3 to 5 seconds.
 - You want as many philosophers to eat and think concurrently.
 - Design your program to handle N philosophers and N forks after you get it working for 5.
 - Use threads for this problem.
 - When you get your program working, how to you prove that no philosopher will starve?
-  (Just looking at output from print() statements is not enough)
+	(Just looking at output from print() statements is not enough)
 - Are the philosophers each eating and thinking the same amount?
 - Using lists for philosophers and forks will help you in this program.
-  for example: philosophers[i] needs forks[i] and forks[i+1] to eat
+	for example: philosophers[i] needs forks[i] and forks[i+1] to eat
 """
 
 import time
@@ -65,14 +65,62 @@ import threading
 PHILOSOPHERS = 5
 MAX_MEALS = PHILOSOPHERS * 5
 
-def main():
-    # TODO - create the waiter (A class would be best here)
-    # TODO - create the forks
-    # TODO - create PHILOSOPHERS philosophers
-    # TODO - Start them eating and thinking
-    # TODO - Display how many times each philosopher ate
+global meals_eaten 
+meals_eaten = 0
 
-    pass
+
+class Philosopher(threading.Thread):
+	def __init__(self, l_fork, r_fork):
+		threading.Thread.__init__(self)
+		self.l_fork = l_fork
+		self.r_fork = r_fork
+		self.meals_eaten = 0
+		
+
+	def run(self):
+		self.eat()
+		  
+	def eat(self):
+		if self.meals_eaten < 5:
+			self.l_fork.acquire()
+			self.r_fork.acquire()
+			print('forks acquired')
+			time.sleep(0.5) 
+			self.l_fork.release()
+			self.r_fork.release()
+			self.meals_eaten += 1
+			 
+		else:
+			return  
+		self.thinking() 
+
+	def thinking(self):
+		time.sleep(0.5)
+		self.eat()
+
+def main():
+		# TODO - create the forks
+		forks = [threading.Lock() for i in range(PHILOSOPHERS)]
+		
+		# TODO - create PHILOSOPHERS philosophers
+		philosophers = [Philosopher(forks[i], forks[i % PHILOSOPHERS]) for i in range(PHILOSOPHERS)]
+		# TODO - Start them eating and thinking
+		for phil in philosophers:
+				phil.start()
+		for phil in philosophers:
+				phil.join()
+		# TODO - Display how many times each philosopher ate
+
+		
+
+
+		# TODO - create the waiter (A class would be best here)
+		# TODO - create the forks
+		# TODO - create PHILOSOPHERS philosophers
+		# TODO - Start them eating and thinking
+		# TODO - Display how many times each philosopher ate
+
+		
 
 if __name__ == '__main__':
-    main()
+		main()

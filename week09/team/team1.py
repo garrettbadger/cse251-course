@@ -60,14 +60,24 @@ meals_eaten = 0
 
 
 class Philosopher(threading.Thread):
-    def __init__(self, l_fork, r_fork):
+    def __init__(self, id, lock_meals, l_fork, r_fork):
         threading.Thread.__init__(self)
         self.l_fork = l_fork
         self.r_fork = r_fork
         self.ate = 0
+        self.id = id
+        self.lock_meals = lock_meals
+
     def run(self):
        global meals_eaten
-       
+       done = False
+       while not done:
+           with self.lock_meals:
+               if meals_eaten >= MAX_MEALS:
+                   done = True
+                   continue
+            self.l_fork.acquire()
+           if not
        if meals_eaten < MAX_MEALS:
           self.l_fork.acquire()
           self.r_fork.acquire()
