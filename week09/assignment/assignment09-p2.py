@@ -2,7 +2,7 @@
 Course: CSE 251 
 Lesson Week: 09
 File: assignment09-p2.py 
-Author: <Add name here>
+Author: Garrett Badger
 
 Purpose: Part 2 of assignment 09, finding the end position in the maze
 
@@ -18,12 +18,12 @@ change the program to display the found path to the exit position.
 
 What would be your strategy?  
 
-<Answer here>
+You could probably use a list like we did before since they are thread safe.
 
 
 Why would it work?
 
-<Answer here>
+I think it would work because lists are thread safe. 
 
 """
 import math
@@ -80,8 +80,8 @@ def solve_find_end(maze):
     stop = False
     global thread_count
     thread_count = 0
-  
-
+    lock = threading.Lock()
+    threads = []
     # Inner recursive function
     def _solve(x, y, color):
         global stop
@@ -89,40 +89,47 @@ def solve_find_end(maze):
 
         if maze.at_end(x, y):
             stop = True
-            
-        
+
         if stop:
             return
 
-        
-
-        poss = maze.get_possible_moves(x, y)
+        with lock:
+            poss = maze.get_possible_moves(x, y)
 
         if len(poss) == 0:
             return
+        
         # get moves
         # create threads
         # go down path myself
+           
         # then join
+           
         # maze is a critical section; get in and out as fast as possible
         # get_possible needs to be locked
         # might be hanging because of threads not joining properly
-        for m in poss:
-            # all below maze methods need a lock
-            if maze.can_move_here(*m):
-                maze.move(*m, color)
-                new_poss = maze.get_possible_moves(*m)
-                if len(new_poss) > 1:
-                    if m == new_poss[0]:
-                        _solve(*m, color)
-                    else:
-                        thread_count += 1
-                        thread = threading.Thread(target=_solve, args=(*m, get_color()))
-                        thread.start()
-                        thread.join()
-                else:
-                    _solve(*m, color)
-            
+
+        
+
+        
+        
+
+        for move in poss:
+            new_x, new_y = move
+            with lock:
+                if maze.can_move_here(new_x, new_y):
+                    maze.move(new_x, new_y, color)
+            if len(poss) > 1:
+                thread = threading.Thread(target=_solve, args=(new_x, new_y, get_color()))
+                thread_count += 1
+                threads.append(thread)
+                thread.start()
+            else:
+                _solve(new_x, new_y, color)
+
+        for thread in threads:
+            thread.join()
+          
     start = maze.get_start_pos()
     color = get_color()
     maze.move(*start, color)
