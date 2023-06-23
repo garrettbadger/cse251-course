@@ -60,19 +60,59 @@ Add any comments for me:
 import random
 from multiprocessing.managers import SharedMemoryManager
 import multiprocessing as mp
+import time
 
 BUFFER_SIZE = 10
 READERS = 2
 WRITERS = 2
+WRITE_INDEX = 10 
+READ_INDEX = 11
+CURRENT_VALUE = 12
+VALUES_RECEIVED = 13
+
+def reader(shared, reader_sem, writer_sem, items_to_send, lock):
+	for i in range(items_to_send):
+		# if (shared[BUFFER_SIZE + WRITE_INDEX] == shared[BUFFER_SIZE + READ_INDEX]):
+		# 	return
+		reader_sem.acquire()
+		
+		position = shared[READ_INDEX]
+		value = shared[position]
+		values_received = shared[VALUES_RECEIVED]
+		values_received += 1
+		position = (position + 1) % BUFFER_SIZE
+		shared[READ_INDEX] = position
+		shared[VALUES_RECEIVED] = values_received
+	
+		print(f'Value: {value} Total Received: {values_received}')
+		writer_sem.release()
+    
+def writer(shared, reader_sem, writer_sem, items_to_send, lock):
+	while True:
+		# if (shared[BUFFER_SIZE + WRITE_INDEX + 1] % BUFFER_SIZE == shared[BUFFER_SIZE + READ_INDEX]):
+		# 	return
+		
+		writer_sem.acquire()
+		
+		if items_to_send == shared[VALUES_RECEIVED]:
+			break
+		position = shared[WRITE_INDEX]
+		value = shared[CURRENT_VALUE]
+		shared[position] = value
+		value += 1
+		position = (position + 1) % BUFFER_SIZE
+		shared[CURRENT_VALUE] = value
+		shared[WRITE_INDEX] = position
+		reader_sem.release()
 
 def main():
 
     # This is the number of values that the writer will send to the reader
-    items_to_send = random.randint(1000, 10000)
+    items_to_send = random.randint(100, 1000)
 
     smm = SharedMemoryManager()
     smm.start()
-
+    
     # TODO - Create a ShareableList to be used between the processes
     #      - The buffer should be size 10 PLUS at least three other
     #        values (ie., [0] * (BUFFER_SIZE + 3)).  The extra values
@@ -83,20 +123,34 @@ def main():
     #        You can add another value to the sharedable list to keep
     #        track of the number of values received by the readers.
     #        (ie., [0] * (BUFFER_SIZE + 4))
-
+    shared = smm.ShareableList([0] * (BUFFER_SIZE + 4))
+    print(items_to_send)
+    print(shared)
+    time.sleep(2)
     # TODO - Create any lock(s) or semaphore(s) that you feel you need
-
+    reader_sem = mp.Semaphore(0)
+    writer_sem = mp.Semaphore(BUFFER_SIZE)
+    lock = mp.Lock()
     # TODO - create reader and writer processes
-
+    writers = [mp.Process(target=writer, args=(shared, reader_sem, writer_sem, items_to_send, lock)) for i in range(WRITERS)]
+    readers = [mp.Process(target=reader, args=(shared, reader_sem, writer_sem, items_to_send, lock)) for i in range(READERS)]
     # TODO - Start the processes and wait for them to finish
-
+    for r in readers:
+        r.start()
+    for w in writers:
+        w.start()
+    for r in readers:
+        r.join()
+    for w in writers:
+        w.join()
+    
     print(f'{items_to_send} values sent')
 
     # TODO - Display the number of numbers/items received by the reader.
     #        Can not use "items_to_send", must be a value collected
     #        by the reader processes.
     # print(f'{<your variable>} values received')
-
+    print(f'Values sent: {shared[VALUES_RECEIVED]}')
     smm.shutdown()
 
 
