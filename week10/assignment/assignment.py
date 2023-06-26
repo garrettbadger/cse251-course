@@ -71,39 +71,40 @@ CURRENT_VALUE = 12
 VALUES_RECEIVED = 13
 
 def reader(shared, reader_sem, writer_sem, items_to_send, lock):
-	for i in range(items_to_send):
-		# if (shared[BUFFER_SIZE + WRITE_INDEX] == shared[BUFFER_SIZE + READ_INDEX]):
-		# 	return
-		reader_sem.acquire()
-		
-		position = shared[READ_INDEX]
-		value = shared[position]
-		values_received = shared[VALUES_RECEIVED]
-		values_received += 1
-		position = (position + 1) % BUFFER_SIZE
-		shared[READ_INDEX] = position
-		shared[VALUES_RECEIVED] = values_received
-	
-		print(f'Value: {value} Total Received: {values_received}')
-		writer_sem.release()
+    for i in range(items_to_send):
+        # if (shared[BUFFER_SIZE + WRITE_INDEX] != shared[BUFFER_SIZE + READ_INDEX]):
+			
+            reader_sem.acquire()
+            with lock:
+      
+                position = shared[READ_INDEX]
+                value = shared[position]
+                values_received = shared[VALUES_RECEIVED]
+                values_received += 1
+                position = (position + 1) % BUFFER_SIZE
+                shared[READ_INDEX] = position
+                shared[VALUES_RECEIVED] = values_received
+    
+            print(f'Value: {value} Total Received: {values_received}')
+            writer_sem.release()
     
 def writer(shared, reader_sem, writer_sem, items_to_send, lock):
-	while True:
-		# if (shared[BUFFER_SIZE + WRITE_INDEX + 1] % BUFFER_SIZE == shared[BUFFER_SIZE + READ_INDEX]):
-		# 	return
-		
-		writer_sem.acquire()
-		
-		if items_to_send == shared[VALUES_RECEIVED]:
-			break
-		position = shared[WRITE_INDEX]
-		value = shared[CURRENT_VALUE]
-		shared[position] = value
-		value += 1
-		position = (position + 1) % BUFFER_SIZE
-		shared[CURRENT_VALUE] = value
-		shared[WRITE_INDEX] = position
-		reader_sem.release()
+    while True:
+        # if (shared[BUFFER_SIZE + WRITE_INDEX + 1] % BUFFER_SIZE != shared[BUFFER_SIZE + READ_INDEX]):
+
+            writer_sem.acquire()
+            
+            if items_to_send == shared[VALUES_RECEIVED]:
+                break
+            with lock:
+                position = shared[WRITE_INDEX]
+                value = shared[CURRENT_VALUE]
+                shared[position] = value
+                value += 1
+                position = (position + 1) % BUFFER_SIZE
+                shared[CURRENT_VALUE] = value
+                shared[WRITE_INDEX] = position
+            reader_sem.release()
 
 def main():
 
