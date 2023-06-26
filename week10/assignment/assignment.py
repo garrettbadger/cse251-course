@@ -2,9 +2,12 @@
 Course: CSE 251
 Lesson Week: 10
 File: assignment.py
-Author: <your name>
+Author: Garrett Badger
 
 Purpose: assignment for week 10 - reader writer problem
+
+Justification: I believe I was able to correctly implement 2 readers and 2 writers
+accessing the shared memory as outlined in the project instructions.
 
 Instructions:
 
@@ -53,7 +56,7 @@ Instructions:
   
                     print(<variable>, end=', ', flush=True)
 
-Add any comments for me:
+Add any comments for me: 
 
 """
 
@@ -95,7 +98,7 @@ class Reader(mp.Process):
                 self.shared[READ_INDEX] = position
                 self.shared[VALUES_RECEIVED] = values_received
             print(f'Value: {value} Total Received: {values_received}', end=', ')
-        # print(f'Value: {value} Total Received: {values_received}')
+        
             self.writer_sem.release()
 
 class Writer(mp.Process):
@@ -107,12 +110,14 @@ class Writer(mp.Process):
         self.items_to_send = items_to_send
         self.lock = lock
     def run(self):
-        for i in range(self.items_to_send):
+        while True:
     
         
             self.writer_sem.acquire()
             with self.lock:
-            
+                if self.shared[CURRENT_VALUE] > self.items_to_send:
+                    self.writer_sem.release()
+                    break
                 position = self.shared[WRITE_INDEX]
                 value = self.shared[CURRENT_VALUE]
                 self.shared[position] = value
@@ -121,46 +126,20 @@ class Writer(mp.Process):
                 self.shared[CURRENT_VALUE] = value
                 self.shared[WRITE_INDEX] = position
             self.reader_sem.release()
+        with self.lock:
+            self.writer_sem.acquire()
+            position = self.shared[WRITE_INDEX]
+            self.shared[position] = -1
+            position = (position + 1) % BUFFER_SIZE
+            self.shared[WRITE_INDEX] = position
+            self.reader_sem.release()
 
-# def reader(shared, reader_sem, writer_sem, items_to_send, lock):
-#     while True:
-        
-#         reader_sem.acquire()
-        
-#         with lock:
-#             if items_to_send <= shared[VALUES_RECEIVED]:
-#                 return
-#             position = shared[READ_INDEX]
-#             value = shared[position]
-#             values_received = shared[VALUES_RECEIVED]
-#             values_received += 1
-#             position = (position + 1) % BUFFER_SIZE
-#             shared[READ_INDEX] = position
-#             shared[VALUES_RECEIVED] = values_received
-#         print(f'Value: {value} Total Received: {values_received}', end=', ')
-#         # print(f'Value: {value} Total Received: {values_received}')
-#         writer_sem.release()
-    
-# def writer(shared, reader_sem, writer_sem, items_to_send, lock):
-#     for i in range(items_to_send):
-    
-        
-#         writer_sem.acquire()
-#         with lock:
-            
-#             position = shared[WRITE_INDEX]
-#             value = shared[CURRENT_VALUE]
-#             shared[position] = value
-#             value += 1
-#             position = (position + 1) % BUFFER_SIZE
-#             shared[CURRENT_VALUE] = value
-#             shared[WRITE_INDEX] = position
-#         reader_sem.release()
+
 
 def main():
 
     # This is the number of values that the writer will send to the reader
-    items_to_send = random.randint(100, 1000)
+    items_to_send = random.randint(1000,10000)
 
     smm = SharedMemoryManager()
     smm.start()
@@ -177,28 +156,29 @@ def main():
     #        (ie., [0] * (BUFFER_SIZE + 4))
     shared = smm.ShareableList([0] * (BUFFER_SIZE + 4))
     print(items_to_send)
-    print(shared)
+    
     time.sleep(2)
     # TODO - Create any lock(s) or semaphore(s) that you feel you need
     reader_sem = mp.Semaphore(0)
     writer_sem = mp.Semaphore(BUFFER_SIZE)
     lock = mp.Lock()
     # TODO - create reader and writer processes
-    # writers = [mp.Process(target=writer, args=(shared, reader_sem, writer_sem, items_to_send, lock)) for i in range(WRITERS)]
-    # readers = [mp.Process(target=reader, args=(shared, reader_sem, writer_sem, items_to_send, lock)) for i in range(READERS)]
+    
     writers = [Writer(shared, reader_sem, writer_sem, items_to_send, lock) for i in range(WRITERS)]
     readers = [Reader(shared, reader_sem, writer_sem, items_to_send, lock) for i in range(READERS)]
     
     # TODO - Start the processes and wait for them to finish
-    for r in readers:
-        r.start()
     for w in writers:
         w.start()
+    time.sleep(1)
+    for r in readers:
+        r.start()
+    
     for r in readers:
         r.join()
     for w in writers:
         w.join()
-    
+    print()
     print(f'{items_to_send} values sent')
 
     # TODO - Display the number of numbers/items received by the reader.
