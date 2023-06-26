@@ -102,17 +102,10 @@ def solve_find_end(maze):
         # get moves
         # create threads
         # go down path myself
-           
         # then join
-           
         # maze is a critical section; get in and out as fast as possible
         # get_possible needs to be locked
         # might be hanging because of threads not joining properly
-
-        
-
-        
-        
 
         for move in poss:
             new_x, new_y = move
@@ -137,7 +130,6 @@ def solve_find_end(maze):
     thread_count+=1
     thread.start()
     thread.join()
-    
     
 
 def find_end(log, filename, delay):
