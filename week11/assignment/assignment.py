@@ -59,6 +59,7 @@ def guest():
 
 def main():
     # Start time of the running of the program. 
+    #Do not use with lock for this assignment it will cause problems.
     start_time = time.time()
 
     # TODO - add any variables, data structures, processes you need
