@@ -60,14 +60,53 @@ class Main {
     {
       array[i] = Math.abs(rand.nextInt());
     }
+    int threadCount = 4;
+    int chunkSize = count / threadCount;
+    int startIndex = 0;
+    int endIndex = chunkSize -1;
+    MyThread[] threads = new MyThread[threadCount];
+    for (int i = 0; i < numThreads; i++) {
+      if (i == numThreads - 1) {
+          endIndex = count - 1; // Adjust the endIndex for the last thread
+      }
+      threads[i] = new PrimeThread(array, startIndex, endIndex);
+      threads[i].start();
+
+      startIndex = endIndex + 1;
+      endIndex += chunkSize;
+  }
 
   // TODO - this is just sample code. you can remove it.
-    for (int i = 0; i < count; i++) 
-    {
-      if (isPrime(array[i]))
-      {
-        System.out.println(array[i]);
-      }
+  for (int i = 0; i < numThreads; i++) {
+    try {
+        threads[i].join();
+    } catch (InterruptedException e) {
+        e.printStackTrace();
     }
   }
+  }
 }
+class MyThread extends Thread {  
+
+    private int startIndex;
+    private int endIndex;
+    private int[] array;
+
+    public MyThread(int startIndex, int endIndex, int[] array){
+      this.array = array;
+      this.startIndex = startIndex;
+      this.endIndex = endIndex;
+    }
+  @Override
+  public void run() {  
+      for (int i = startIndex; i <= int endIndex; i++){
+        if (isPrime(array[i])){
+          System.out.println("thread is running..." + Thread.currentThread().getId());
+        }
+        
+      }
+        
+  }
+
+}
+
