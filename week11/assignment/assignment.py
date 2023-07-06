@@ -1,3 +1,11 @@
+"""
+Course: CSE 251
+Lesson Week: 11
+File: Assignment.py
+Name: Garrett Badger
+Rationale: I think I deserve a 3 because I completed the requirements but occasionally I get 
+a lock error and I am not sure why. 
+"""
 import time
 import random
 import multiprocessing as mp
