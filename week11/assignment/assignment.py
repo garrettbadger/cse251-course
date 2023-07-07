@@ -36,8 +36,10 @@ def guest_partying(id):
     time.sleep(random.uniform(0, 1))
 
 def cleaner():
-    """
-    do the following for TIME seconds
+    start = time.time()
+    while time.time() - start < 60:
+        """
+        do the following for TIME seconds
         cleaner will wait to try to clean the room (cleaner_waiting())
         get access to the room
         display message STARTING_CLEANING_MESSAGE
@@ -60,6 +62,11 @@ def guest():
 def main():
     # Start time of the running of the program. 
     #Do not use with lock for this assignment it will cause problems.
+    # Think of the locks as keys to the room. 
+    # One key is for the room. The other is for the race condition i think. 
+    # Only the first person has to worry about the key because the party is happening. 
+    # When the last person leaves then they have to do something with the key. 
+    # Use mp.value()
     start_time = time.time()
 
     # TODO - add any variables, data structures, processes you need
