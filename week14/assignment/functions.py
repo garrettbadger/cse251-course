@@ -44,6 +44,8 @@ def depth_fs_pedigree(family_id, tree):
     # TODO - implement Depth first retrieval
 
     print('WARNING: DFS function not written')
+    # take the queue and empty it and make threads for the function to call persons and family
+    # then join them and keep doing that until the queue doesn't have anything in it.
 
     pass
 
