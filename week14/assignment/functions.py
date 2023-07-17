@@ -42,7 +42,8 @@ Example JSON returned from the server
 You will lose 10% if you don't detail your part 1 and part 2 code below
 
 Describe how to speed up part 1
-
+Try implementing without threads first. 
+Once it works then you can add threads and speed it up.
 <Add your comments here>
 
 
@@ -95,6 +96,7 @@ import queue
 #     dfs_thread.join()
 #     return tree
 #     pass
+"""
 def depth_fs_pedigree(family_id, tree):
     
     visited = set()
@@ -125,6 +127,33 @@ def depth_fs_pedigree(family_id, tree):
     dfs_thread.join()
 
     return tree
+"""
+def depth_fs_pedigree(family_id, tree):
+    req = Request_thread(f'{TOP_API_URL}/family/{family_id}')
+    req.start()
+    req.join()
+
+    fam_data = req.get_response()
+    print(fam_data)
+    reqs = []
+
+   
+
+    #get the children
+    
+    for id in fam_data['children'] + [fam_data['husband_id']] + [fam_data['wife_id']]:
+        req = Request_thread(f'{TOP_API_URL}/person/{id}')
+        req.start()
+        reqs.append(req)
+    for req in reqs:
+        req.join()
+        data = req.get_response()
+        person = Person(data)
+        tree.add_person(person)
+
+    fam = Family(fam_data)
+    tree.add_family(fam)
+    
 # -----------------------------------------------------------------------------
 def breadth_fs_pedigree(family_id, tree):
     # KEEP this function even if you don't implement it
