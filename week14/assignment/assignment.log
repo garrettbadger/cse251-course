@@ -1,31 +1,5 @@
-11:00:12| 
+18:41:35| 
 
-11:00:12| #############################################
-11:00:12| Depth First Search: 2 generations
-11:00:12| #############################################
-11:00:12| 0.52762930
-11:00:13| 
-
-
-11:00:13| ************* TREE DISPLAY *************
-11:00:13| Family id: 4999773661
-11:00:13|   Husband: Hudson, 29-3-1926
-11:00:13|   Wife: Abigail, 2-9-1821
-11:00:13|   Husband Parents: None
-11:00:13|   Wife Parents: None
-11:00:13|   Children: Mateo, Hannah, Oliver
-11:00:13| 
-11:00:13| Number of people                    : 5
-11:00:13| Number of families                  : 1
-11:00:13| Max generations                     : 1
-11:00:13| People connected to starting family : 5
-11:00:13| 
-11:00:13| total_time                    : 0.52763
-11:00:13| Generations                   : 2
-11:00:13| People % Families / second    : 11.37162
-11:00:13| 
-11:00:13| STATS        Retrieved | Server details
-11:00:13| People  :            5 |             18
-11:00:13| Families:            1 |              3
-11:00:13| API Calls            : 8
-11:00:13| Max number of threads: 5
+18:41:36| #############################################
+18:41:36| Depth First Search: 3 generations
+18:41:36| #############################################

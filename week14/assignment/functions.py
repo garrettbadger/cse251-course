@@ -1,7 +1,7 @@
 """
 Course: CSE 251, week 14
 File: functions.py
-Author: <your name>
+Author: Garett Badger
 
 Instructions:
 
@@ -138,22 +138,43 @@ def depth_fs_pedigree(family_id, tree):
     reqs = []
 
    
-
-    #get the children
     
-    for id in fam_data['children'] + [fam_data['husband_id']] + [fam_data['wife_id']]:
+    #get the children
+    def dfs(person):
+        if person.get_parentid() == None:
+            return
+        req = Request_thread(f'{TOP_API_URL}/family/{person.get_parentid()}')
+        req.start()
+        req.join()
+        fam_data = req.get_response()
+        print(f'Parent ID: {person.get_parentid()}')
+        
+        # if person.get_parentid() == fam_data['husband_id'] or person.get_parentid() == fam_data['wife_id']:
+        #     return
+       
+        for id in fam_data['children'] + [fam_data['husband_id']] + [fam_data['wife_id']]:
+            req = Request_thread(f'{TOP_API_URL}/person/{id}')
+            req.start()
+            reqs.append(req)
+        for req in reqs:
+            req.join()
+            data = req.get_response()
+            person = Person(data)
+            tree.add_person(person)
+            # print(f'Persons family ID: {person.get_parentid()} fam_data[id]: {fam_data["id"]}')
+            if person.get_parentid() != fam_data['husband_id'] and person.get_parentid() != fam_data['wife_id'] and person.get_parentid() != None:
+                dfs(person)
+
+        fam = Family(fam_data)
+        tree.add_family(fam)
+
+    for id in [fam_data['husband_id']] + [fam_data['wife_id']]:
         req = Request_thread(f'{TOP_API_URL}/person/{id}')
         req.start()
-        reqs.append(req)
-    for req in reqs:
         req.join()
         data = req.get_response()
         person = Person(data)
-        tree.add_person(person)
-
-    fam = Family(fam_data)
-    tree.add_family(fam)
-    
+        dfs(person)
 # -----------------------------------------------------------------------------
 def breadth_fs_pedigree(family_id, tree):
     # KEEP this function even if you don't implement it
